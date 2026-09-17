@@ -1,0 +1,72 @@
+[
+  {
+    "index": 1,
+    "filename": "PowderyMildew1.jpg",
+    "original_file": "IMG_20211107_123511 (Custom).jpg",
+    "v2_prediction": "Powdery Mildew",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 2,
+    "filename": "PowderyMildew2.jpg",
+    "original_file": "IMG_20211107_122443 (Custom).jpg",
+    "v2_prediction": "Powdery Mildew",
+    "v2_confidence": 99.8
+  },
+  {
+    "index": 3,
+    "filename": "PowderyMildew3.jpg",
+    "original_file": "IMG_20211107_123505 (Custom).jpg",
+    "v2_prediction": "Powdery Mildew",
+    "v2_confidence": 99.8
+  },
+  {
+    "index": 4,
+    "filename": "PowderyMildew4.jpg",
+    "original_file": "IMG_20211107_122229 (Custom).jpg",
+    "v2_prediction": "Powdery Mildew",
+    "v2_confidence": 99.8
+  },
+  {
+    "index": 5,
+    "filename": "PowderyMildew5.jpg",
+    "original_file": "IMG_20211107_124434 (Custom).jpg",
+    "v2_prediction": "Powdery Mildew",
+    "v2_confidence": 99.8
+  },
+  {
+    "index": 6,
+    "filename": "PowderyMildew6.jpg",
+    "original_file": "IMG_20211107_125417 (Custom).jpg",
+    "v2_prediction": "Powdery Mildew",
+    "v2_confidence": 99.8
+  },
+  {
+    "index": 7,
+    "filename": "PowderyMildew7.jpg",
+    "original_file": "IMG_20211107_125147 (Custom).jpg",
+    "v2_prediction": "Powdery Mildew",
+    "v2_confidence": 99.8
+  },
+  {
+    "index": 8,
+    "filename": "PowderyMildew8.jpg",
+    "original_file": "IMG_20211107_125021 (Custom).jpg",
+    "v2_prediction": "Powdery Mildew",
+    "v2_confidence": 99.7
+  },
+  {
+    "index": 9,
+    "filename": "PowderyMildew9.jpg",
+    "original_file": "IMG_20211107_124055 (Custom).jpg",
+    "v2_prediction": "Powdery Mildew",
+    "v2_confidence": 99.7
+  },
+  {
+    "index": 10,
+    "filename": "PowderyMildew10.jpg",
+    "original_file": "IMG_20211107_122453 (Custom).jpg",
+    "v2_prediction": "Powdery Mildew",
+    "v2_confidence": 99.6
+  }
+]

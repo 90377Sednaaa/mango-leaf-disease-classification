@@ -1,0 +1,72 @@
+[
+  {
+    "index": 1,
+    "filename": "DieBack1.jpg",
+    "original_file": "20211129_161605 (Custom)(1).jpg",
+    "v2_prediction": "Die Back",
+    "v2_confidence": 100.0
+  },
+  {
+    "index": 2,
+    "filename": "DieBack2.jpg",
+    "original_file": "20211129_161522 (Custom).jpg",
+    "v2_prediction": "Die Back",
+    "v2_confidence": 100.0
+  },
+  {
+    "index": 3,
+    "filename": "DieBack3.jpg",
+    "original_file": "20211129_161701 (Custom).jpg",
+    "v2_prediction": "Die Back",
+    "v2_confidence": 100.0
+  },
+  {
+    "index": 4,
+    "filename": "DieBack4.jpg",
+    "original_file": "20211129_161620 (Custom)(1).jpg",
+    "v2_prediction": "Die Back",
+    "v2_confidence": 100.0
+  },
+  {
+    "index": 5,
+    "filename": "DieBack5.jpg",
+    "original_file": "20211129_161616 (Custom)(1).jpg",
+    "v2_prediction": "Die Back",
+    "v2_confidence": 100.0
+  },
+  {
+    "index": 6,
+    "filename": "DieBack6.jpg",
+    "original_file": "20211129_160432 (Custom).jpg",
+    "v2_prediction": "Die Back",
+    "v2_confidence": 100.0
+  },
+  {
+    "index": 7,
+    "filename": "DieBack7.jpg",
+    "original_file": "20211129_160611 (Custom).jpg",
+    "v2_prediction": "Die Back",
+    "v2_confidence": 100.0
+  },
+  {
+    "index": 8,
+    "filename": "DieBack8.jpg",
+    "original_file": "WhatsApp Image 2025-08-07 at 3.46.46 PM (2) - Copy.jpeg",
+    "v2_prediction": "Die Back",
+    "v2_confidence": 99.7
+  },
+  {
+    "index": 9,
+    "filename": "DieBack9.jpg",
+    "original_file": "WhatsApp Image 2025-08-07 at 3.46.43 PM (2) - Copy.jpeg",
+    "v2_prediction": "Die Back",
+    "v2_confidence": 99.6
+  },
+  {
+    "index": 10,
+    "filename": "DieBack10.jpg",
+    "original_file": "WhatsApp Image 2025-08-07 at 3.46.35 PM (1) - Copy.jpeg",
+    "v2_prediction": "Die Back",
+    "v2_confidence": 99.5
+  }
+]

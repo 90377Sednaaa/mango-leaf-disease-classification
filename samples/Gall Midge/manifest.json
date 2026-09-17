@@ -1,0 +1,72 @@
+[
+  {
+    "index": 1,
+    "filename": "GallMidge1.jpg",
+    "original_file": "IMG_20211106_162837 (Custom).jpg",
+    "v2_prediction": "Gall Midge",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 2,
+    "filename": "GallMidge2.jpg",
+    "original_file": "IMG_20211106_162849 (Custom).jpg",
+    "v2_prediction": "Gall Midge",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 3,
+    "filename": "GallMidge3.jpg",
+    "original_file": "IMG_20211106_163104 (Custom).jpg",
+    "v2_prediction": "Gall Midge",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 4,
+    "filename": "GallMidge4.jpg",
+    "original_file": "IMG_20211106_164403 (Custom).jpg",
+    "v2_prediction": "Gall Midge",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 5,
+    "filename": "GallMidge5.jpg",
+    "original_file": "IMG_20211106_163043 (Custom).jpg",
+    "v2_prediction": "Gall Midge",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 6,
+    "filename": "GallMidge6.jpg",
+    "original_file": "IMG_20211106_165644 (Custom).jpg",
+    "v2_prediction": "Gall Midge",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 7,
+    "filename": "GallMidge7.jpg",
+    "original_file": "IMG_20211106_164352 (Custom).jpg",
+    "v2_prediction": "Gall Midge",
+    "v2_confidence": 99.8
+  },
+  {
+    "index": 8,
+    "filename": "GallMidge8.jpg",
+    "original_file": "IMG_20211106_165537 (Custom).jpg",
+    "v2_prediction": "Gall Midge",
+    "v2_confidence": 99.8
+  },
+  {
+    "index": 9,
+    "filename": "GallMidge9.jpg",
+    "original_file": "IMG_20211106_162638 (Custom).jpg",
+    "v2_prediction": "Gall Midge",
+    "v2_confidence": 99.8
+  },
+  {
+    "index": 10,
+    "filename": "GallMidge10.jpg",
+    "original_file": "IMG_20211106_162425 (Custom).jpg",
+    "v2_prediction": "Gall Midge",
+    "v2_confidence": 99.8
+  }
+]

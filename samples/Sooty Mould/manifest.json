@@ -1,0 +1,72 @@
+[
+  {
+    "index": 1,
+    "filename": "SootyMould1.jpg",
+    "original_file": "WhatsApp Image 2025-08-07 at 5.32.40 PM.jpeg",
+    "v2_prediction": "Sooty Mould",
+    "v2_confidence": 99.7
+  },
+  {
+    "index": 2,
+    "filename": "SootyMould2.jpg",
+    "original_file": "IMG_20211108_123144 (Custom).jpg",
+    "v2_prediction": "Sooty Mould",
+    "v2_confidence": 99.7
+  },
+  {
+    "index": 3,
+    "filename": "SootyMould3.jpg",
+    "original_file": "IMG_20211211_153406 (Custom).jpg",
+    "v2_prediction": "Sooty Mould",
+    "v2_confidence": 99.7
+  },
+  {
+    "index": 4,
+    "filename": "SootyMould4.jpg",
+    "original_file": "IMG_20211108_123015 (Custom).jpg",
+    "v2_prediction": "Sooty Mould",
+    "v2_confidence": 99.6
+  },
+  {
+    "index": 5,
+    "filename": "SootyMould5.jpg",
+    "original_file": "IMG_20211108_122743 (Custom).jpg",
+    "v2_prediction": "Sooty Mould",
+    "v2_confidence": 99.6
+  },
+  {
+    "index": 6,
+    "filename": "SootyMould6.jpg",
+    "original_file": "IMG_20211108_123159 (Custom).jpg",
+    "v2_prediction": "Sooty Mould",
+    "v2_confidence": 99.6
+  },
+  {
+    "index": 7,
+    "filename": "SootyMould7.jpg",
+    "original_file": "IMG_20211108_123451 (Custom).jpg",
+    "v2_prediction": "Sooty Mould",
+    "v2_confidence": 99.6
+  },
+  {
+    "index": 8,
+    "filename": "SootyMould8.jpg",
+    "original_file": "IMG_20211108_122934 (Custom).jpg",
+    "v2_prediction": "Sooty Mould",
+    "v2_confidence": 99.6
+  },
+  {
+    "index": 9,
+    "filename": "SootyMould9.jpg",
+    "original_file": "IMG_20211108_123553 (Custom).jpg",
+    "v2_prediction": "Sooty Mould",
+    "v2_confidence": 99.5
+  },
+  {
+    "index": 10,
+    "filename": "SootyMould10.jpg",
+    "original_file": "IMG_20211108_123203 (Custom).jpg",
+    "v2_prediction": "Sooty Mould",
+    "v2_confidence": 99.5
+  }
+]

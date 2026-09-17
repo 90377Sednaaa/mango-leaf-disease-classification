@@ -1,0 +1,72 @@
+[
+  {
+    "index": 1,
+    "filename": "BacterialCanker1.jpg",
+    "original_file": "IMG_20211106_143238 (Custom).jpg",
+    "v2_prediction": "Bacterial Canker",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 2,
+    "filename": "BacterialCanker2.jpg",
+    "original_file": "IMG_20211106_143157 (Custom).jpg",
+    "v2_prediction": "Bacterial Canker",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 3,
+    "filename": "BacterialCanker3.jpg",
+    "original_file": "IMG_20211106_143228 (Custom).jpg",
+    "v2_prediction": "Bacterial Canker",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 4,
+    "filename": "BacterialCanker4.jpg",
+    "original_file": "IMG_20211106_143139 (Custom).jpg",
+    "v2_prediction": "Bacterial Canker",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 5,
+    "filename": "BacterialCanker5.jpg",
+    "original_file": "IMG_20211106_143216 (Custom).jpg",
+    "v2_prediction": "Bacterial Canker",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 6,
+    "filename": "BacterialCanker6.jpg",
+    "original_file": "IMG_20211106_143242 (Custom).jpg",
+    "v2_prediction": "Bacterial Canker",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 7,
+    "filename": "BacterialCanker7.jpg",
+    "original_file": "IMG_20211106_142922 (Custom).jpg",
+    "v2_prediction": "Bacterial Canker",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 8,
+    "filename": "BacterialCanker8.jpg",
+    "original_file": "IMG_20211106_142818 (Custom).jpg",
+    "v2_prediction": "Bacterial Canker",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 9,
+    "filename": "BacterialCanker9.jpg",
+    "original_file": "IMG_20211106_143254 (Custom).jpg",
+    "v2_prediction": "Bacterial Canker",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 10,
+    "filename": "BacterialCanker10.jpg",
+    "original_file": "IMG_20211106_142807 (Custom).jpg",
+    "v2_prediction": "Bacterial Canker",
+    "v2_confidence": 99.9
+  }
+]

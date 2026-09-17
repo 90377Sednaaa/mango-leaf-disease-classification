@@ -1,0 +1,72 @@
+[
+  {
+    "index": 1,
+    "filename": "Anthracnose1.jpg",
+    "original_file": "IMG_20211011_164644 (Custom).jpg",
+    "v2_prediction": "Anthracnose",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 2,
+    "filename": "Anthracnose2.jpg",
+    "original_file": "IMG_20211011_162614.jpg",
+    "v2_prediction": "Anthracnose",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 3,
+    "filename": "Anthracnose3.jpg",
+    "original_file": "IMG_20211011_165134 (Custom).jpg",
+    "v2_prediction": "Anthracnose",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 4,
+    "filename": "Anthracnose4.jpg",
+    "original_file": "IMG_20211011_165710 (Custom).jpg",
+    "v2_prediction": "Anthracnose",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 5,
+    "filename": "Anthracnose5.jpg",
+    "original_file": "IMG_20211011_165137 (Custom).jpg",
+    "v2_prediction": "Anthracnose",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 6,
+    "filename": "Anthracnose6.jpg",
+    "original_file": "IMG_20211011_164049 (Custom).jpg",
+    "v2_prediction": "Anthracnose",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 7,
+    "filename": "Anthracnose7.jpg",
+    "original_file": "IMG_20211011_164132 (Custom).jpg",
+    "v2_prediction": "Anthracnose",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 8,
+    "filename": "Anthracnose8.jpg",
+    "original_file": "IMG_20211011_165848 (Custom).jpg",
+    "v2_prediction": "Anthracnose",
+    "v2_confidence": 99.9
+  },
+  {
+    "index": 9,
+    "filename": "Anthracnose9.jpg",
+    "original_file": "IMG_20211011_170204 (Custom).jpg",
+    "v2_prediction": "Anthracnose",
+    "v2_confidence": 99.8
+  },
+  {
+    "index": 10,
+    "filename": "Anthracnose10.jpg",
+    "original_file": "IMG_20211011_170409 (Custom).jpg",
+    "v2_prediction": "Anthracnose",
+    "v2_confidence": 99.8
+  }
+]

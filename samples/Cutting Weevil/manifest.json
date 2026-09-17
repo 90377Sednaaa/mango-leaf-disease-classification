@@ -1,0 +1,72 @@
+[
+  {
+    "index": 1,
+    "filename": "CuttingWeevil1.jpg",
+    "original_file": "20211011_161606 (Custom) (Custom).jpg",
+    "v2_prediction": "Cutting Weevil",
+    "v2_confidence": 100.0
+  },
+  {
+    "index": 2,
+    "filename": "CuttingWeevil2.jpg",
+    "original_file": "20211011_161140 (Custom) (Custom).jpg",
+    "v2_prediction": "Cutting Weevil",
+    "v2_confidence": 100.0
+  },
+  {
+    "index": 3,
+    "filename": "CuttingWeevil3.jpg",
+    "original_file": "20211011_160625 (Custom) (Custom).jpg",
+    "v2_prediction": "Cutting Weevil",
+    "v2_confidence": 100.0
+  },
+  {
+    "index": 4,
+    "filename": "CuttingWeevil4.jpg",
+    "original_file": "20211011_161147 (Custom) (Custom).jpg",
+    "v2_prediction": "Cutting Weevil",
+    "v2_confidence": 100.0
+  },
+  {
+    "index": 5,
+    "filename": "CuttingWeevil5.jpg",
+    "original_file": "20211011_160614 (Custom) (Custom).jpg",
+    "v2_prediction": "Cutting Weevil",
+    "v2_confidence": 100.0
+  },
+  {
+    "index": 6,
+    "filename": "CuttingWeevil6.jpg",
+    "original_file": "20211011_161142 (Custom) (Custom).jpg",
+    "v2_prediction": "Cutting Weevil",
+    "v2_confidence": 100.0
+  },
+  {
+    "index": 7,
+    "filename": "CuttingWeevil7.jpg",
+    "original_file": "20211011_161155 (Custom) (Custom).jpg",
+    "v2_prediction": "Cutting Weevil",
+    "v2_confidence": 100.0
+  },
+  {
+    "index": 8,
+    "filename": "CuttingWeevil8.jpg",
+    "original_file": "20211011_160612 (Custom) (Custom).jpg",
+    "v2_prediction": "Cutting Weevil",
+    "v2_confidence": 100.0
+  },
+  {
+    "index": 9,
+    "filename": "CuttingWeevil9.jpg",
+    "original_file": "20211011_161832 (Custom) (Custom).jpg",
+    "v2_prediction": "Cutting Weevil",
+    "v2_confidence": 100.0
+  },
+  {
+    "index": 10,
+    "filename": "CuttingWeevil10.jpg",
+    "original_file": "20211011_161410 (Custom) (Custom).jpg",
+    "v2_prediction": "Cutting Weevil",
+    "v2_confidence": 100.0
+  }
+]
