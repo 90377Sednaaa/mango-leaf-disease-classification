@@ -151,21 +151,28 @@ def render_single_specimen_view(v1_model, v2_model):
         image_to_process = None
         image_title = ""
 
-        # Dynamic directory scan: users can add custom images to samples/ anytime
+        # Dynamic directory scan: users can add custom images or subfolders to samples/ anytime
         sample_dir = Path(__file__).resolve().parent / "samples"
         sample_dir.mkdir(exist_ok=True)
         valid_exts = {".jpg", ".jpeg", ".png", ".webp", ".bmp"}
         available_samples = sorted([
-            f for f in sample_dir.iterdir()
+            f for f in sample_dir.rglob("*")
             if f.is_file() and f.suffix.lower() in valid_exts
         ])
 
         if input_source == "Pre-loaded Samples":
             if available_samples:
-                sample_options = {
-                    f.stem.replace("_", " ").title(): f
-                    for f in available_samples
-                }
+                sample_options = {}
+                for f in available_samples:
+                    if f.parent == sample_dir:
+                        lbl = f.stem.replace("_", " ").title()
+                    else:
+                        rel_dir = f.parent.relative_to(sample_dir)
+                        lbl = f"[{rel_dir}] {f.stem.replace('_', ' ').title()}"
+                    if lbl in sample_options:
+                        lbl = f"{lbl} ({f.name})"
+                    sample_options[lbl] = f
+
                 selected_label = st.selectbox(
                     "Select a sample specimen:",
                     list(sample_options.keys()),
@@ -176,7 +183,7 @@ def render_single_specimen_view(v1_model, v2_model):
             else:
                 st.warning("No sample files found in the 'samples/' directory.")
 
-            st.caption("Tip: You can add custom sample images by dropping image files into the 'samples' folder.")
+            st.caption("Tip: You can organize images into subfolders (e.g. 'samples/Healthy/') or drop image files directly into 'samples/'.")
 
         elif input_source == "Upload Image":
             uploaded_file = st.file_uploader(
@@ -541,14 +548,46 @@ def render_batch_testing_view(v1_model, v2_model):
     # 1. Upload & Validation Rules
     # --------------------------------------------------------------------------
     st.subheader("1. Upload Batch Specimens")
-    uploaded_files = st.file_uploader(
-        "Upload leaf images (PNG, JPG, JPEG, WEBP) — Minimum 10 images required:",
-        type=["png", "jpg", "jpeg", "webp"],
-        accept_multiple_files=True,
-        help="Select at least 10 leaf image files.",
-    )
 
-    num_uploaded = len(uploaded_files) if uploaded_files else 0
+    sample_dir = Path(__file__).resolve().parent / "samples"
+    sample_dir.mkdir(exist_ok=True)
+    sample_subdirs = sorted([d for d in sample_dir.iterdir() if d.is_dir()])
+
+    batch_source = "Upload Images (Browser)"
+    if sample_subdirs:
+        batch_source = st.radio(
+            "Batch Input Source:",
+            ("Upload Images (Browser)", "Select Folder from samples/"),
+            horizontal=True,
+        )
+
+    batch_files = []  # List of tuples: (display_name, file_or_path)
+
+    if batch_source == "Upload Images (Browser)":
+        uploaded_files = st.file_uploader(
+            "Upload leaf images (PNG, JPG, JPEG, WEBP) — Minimum 10 images required:",
+            type=["png", "jpg", "jpeg", "webp"],
+            accept_multiple_files=True,
+            help="Select at least 10 leaf image files.",
+        )
+        if uploaded_files:
+            batch_files = [(f.name, f) for f in uploaded_files]
+    else:
+        folder_options = {d.name: d for d in sample_subdirs}
+        chosen_folder_name = st.selectbox(
+            "Select subfolder from 'samples/':",
+            list(folder_options.keys()),
+        )
+        chosen_folder = folder_options[chosen_folder_name]
+        valid_exts = {".jpg", ".jpeg", ".png", ".webp", ".bmp"}
+        folder_images = sorted([
+            f for f in chosen_folder.iterdir()
+            if f.is_file() and f.suffix.lower() in valid_exts
+        ])
+        batch_files = [(f.name, f) for f in folder_images]
+        st.caption(f"Detected {len(batch_files)} images in `samples/{chosen_folder_name}`.")
+
+    num_uploaded = len(batch_files)
 
     if num_uploaded < 10:
         st.warning(f"Please upload at least 10 images to run batch validation (Uploaded: {num_uploaded}/10).")
@@ -578,13 +617,13 @@ def render_batch_testing_view(v1_model, v2_model):
             model_utils.CLASS_NAMES,
             index=model_utils.CLASS_NAMES.index("Healthy") if "Healthy" in model_utils.CLASS_NAMES else 0,
         )
-        if uploaded_files:
-            for f in uploaded_files:
-                ground_truth_map[f.name] = uniform_class
+        if batch_files:
+            for fname, _ in batch_files:
+                ground_truth_map[fname] = uniform_class
 
     else:
         st.caption("Assign individual Ground Truth labels for each uploaded image using the table below:")
-        if uploaded_files:
+        if batch_files:
             if "per_image_labels" not in st.session_state:
                 st.session_state["per_image_labels"] = {}
 
@@ -600,15 +639,15 @@ def render_batch_testing_view(v1_model, v2_model):
                 st.write("")
                 st.write("")
                 if st.button("Apply to All Rows"):
-                    for f in uploaded_files:
-                        st.session_state["per_image_labels"][f.name] = preset_class
+                    for fname, _ in batch_files:
+                        st.session_state["per_image_labels"][fname] = preset_class
                     st.rerun()
 
             editor_data = []
-            for f in uploaded_files:
-                current_label = st.session_state["per_image_labels"].get(f.name, model_utils.CLASS_NAMES[0])
+            for fname, _ in batch_files:
+                current_label = st.session_state["per_image_labels"].get(fname, model_utils.CLASS_NAMES[0])
                 editor_data.append({
-                    "Filename": f.name,
+                    "Filename": fname,
                     "Ground Truth": current_label,
                 })
             editor_df = pd.DataFrame(editor_data)
@@ -636,13 +675,15 @@ def render_batch_testing_view(v1_model, v2_model):
             with st.expander("Inspect Uploaded Specimen Thumbnails", expanded=False):
                 col_count = min(4, max(1, num_uploaded))
                 cols = st.columns(col_count)
-                for idx, f in enumerate(uploaded_files):
+                for idx, (fname, f_obj) in enumerate(batch_files):
                     with cols[idx % col_count]:
                         try:
-                            thumb_img = Image.open(f)
-                            st.image(thumb_img, caption=f.name, use_container_width=True)
+                            if hasattr(f_obj, "seek"):
+                                f_obj.seek(0)
+                            thumb_img = Image.open(f_obj)
+                            st.image(thumb_img, caption=fname, use_container_width=True)
                         except Exception:
-                            st.caption(f.name)
+                            st.caption(fname)
         else:
             st.info("Upload at least 10 images above to configure per-image ground truth labels.")
 
@@ -666,22 +707,23 @@ def render_batch_testing_view(v1_model, v2_model):
         else:
             st.caption(f"Ready: {num_uploaded} specimens queued for comparative evaluation.")
 
-    if run_batch and uploaded_files and len(uploaded_files) >= 10:
+    if run_batch and batch_files and len(batch_files) >= 10:
         items = []
         errors = []
-        for f in uploaded_files:
+        for fname, f_obj in batch_files:
             try:
                 # Seek to beginning of file in case it was read for thumbnails
-                f.seek(0)
-                img = Image.open(f)
-                gt = ground_truth_map.get(f.name, model_utils.CLASS_NAMES[0])
+                if hasattr(f_obj, "seek"):
+                    f_obj.seek(0)
+                img = Image.open(f_obj)
+                gt = ground_truth_map.get(fname, model_utils.CLASS_NAMES[0])
                 items.append({
-                    "filename": f.name,
+                    "filename": fname,
                     "image": img,
                     "ground_truth": gt,
                 })
             except Exception as e:
-                errors.append(f"{f.name}: {e}")
+                errors.append(f"{fname}: {e}")
 
         if errors:
             st.error("Errors reading some uploaded images:\n" + "\n".join(errors))
