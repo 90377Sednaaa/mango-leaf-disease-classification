@@ -28,9 +28,12 @@ CLASS_NAMES = [
     "Sooty Mould",
 ]
 
+_robust_v2 = Path(__file__).resolve().parent / "Gournet_v2" / "gournet_v2_robust"
+_best_v2 = Path(__file__).resolve().parent / "Gournet_v2" / "gournet_v2_best"
+
 MODEL_PATHS = {
     "v1": Path(__file__).resolve().parent / "Gournet_v1" / "gournet_model",
-    "v2": Path(__file__).resolve().parent / "Gournet_v2" / "gournet_v2_best",
+    "v2": _robust_v2 if _robust_v2.exists() else _best_v2,
 }
 
 GRADCAM_LAYERS = {
@@ -51,13 +54,13 @@ MODEL_SPECS = {
         "last_conv_layer": "Convolution-4",
     },
     "v2": {
-        "name": "Enhanced GourNet v2",
-        "paper": "Thesis Improvement",
+        "name": "Enhanced GourNet V2 (Robust)",
+        "paper": "Thesis Improvement (Robust Training)",
         "parameters": 98_280,
-        "key_features": "GroupNormalization, GlobalAveragePooling2D, Dual Dropout",
+        "key_features": "GroupNormalization, GlobalAveragePooling2D, Dual Dropout, Robust Augmentation",
         "norm": "GroupNormalization (groups=8) after each block",
         "pooling": "GlobalAveragePooling2D (0-param transition)",
-        "regularization": "SpatialDropout(0.2) + Head Dropout(0.4) + Zoom/Contrast",
+        "regularization": "SpatialDropout(0.2) + Head Dropout(0.4) + Robust Augmentation",
         "last_conv_layer": "Block4_ReLU",
     },
 }

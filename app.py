@@ -126,7 +126,7 @@ def get_v1_model():
     return model_utils.load_model_instance("v1")
 
 
-@st.cache_resource(show_spinner="Loading Enhanced GourNet V2...")
+@st.cache_resource(show_spinner="Loading Enhanced GourNet V2 (Robust)...")
 def get_v2_model():
     return model_utils.load_model_instance("v2")
 
@@ -253,10 +253,10 @@ def render_single_specimen_view(v1_model, v2_model):
               - Reference: Alam et al. (2026)
               - Parameters: 683,656
               - Conv Layer: `Convolution-4`
-            - **GourNet V2 (Enhanced)**
-              - Thesis Improvement
+            - **Enhanced GourNet V2 (Robust)**
+              - Thesis Improvement (Robust Model)
               - Parameters: 98,280 (-85.6%)
-              - Conv Layer: `Block4_Conv`
+              - Conv Layer: `Block4_Conv` / `Block4_ReLU`
             """
         )
 
@@ -405,8 +405,8 @@ def render_single_specimen_view(v1_model, v2_model):
 
     # Right Column: V2
     with col_right:
-        st.subheader("Enhanced GourNet V2")
-        st.caption("Thesis Improvement • 98,280 Parameters (-85.6%)")
+        st.subheader("Enhanced GourNet V2 (Robust)")
+        st.caption("Thesis Improvement (Robust Model) • 98,280 Parameters (-85.6%)")
 
         st.markdown(
             f"""
@@ -534,7 +534,7 @@ def render_batch_testing_view(v1_model, v2_model):
         st.markdown(
             """
             - **GourNet V1 (Baseline)**: 683,656 Parameters
-            - **GourNet V2 (Enhanced)**: 98,280 Parameters (-85.6%)
+            - **Enhanced GourNet V2 (Robust)**: 98,280 Parameters (-85.6%)
             """
         )
 
@@ -861,9 +861,9 @@ def render_batch_testing_view(v1_model, v2_model):
                 f"""
                 <div class="result-card" style="border-left: 4px solid #10b981;">
                     <div class="diagnosis-label">Model Architecture</div>
-                    <div class="diagnosis-name" style="font-size: 1.35rem;">Enhanced GourNet V2</div>
+                    <div class="diagnosis-name" style="font-size: 1.35rem;">Enhanced GourNet V2 (Robust)</div>
                     <div style="color: var(--secondary-text-color, #94a3b8); font-size: 0.82rem; margin-bottom: 0.5rem;">
-                        Thesis Improvement • 98,280 Parameters (-85.6%)
+                        Thesis Improvement (Robust Model) • 98,280 Parameters (-85.6%)
                     </div>
                 </div>
                 """,
