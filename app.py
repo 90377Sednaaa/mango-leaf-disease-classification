@@ -94,6 +94,25 @@ st.markdown(
         font-weight: 600;
         color: var(--text-color, #ffffff) !important;
     }
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+        .block-container {
+            padding-top: 1rem !important;
+            padding-left: 0.75rem !important;
+            padding-right: 0.75rem !important;
+            padding-bottom: 2rem !important;
+        }
+        .diagnosis-name {
+            font-size: 1.4rem !important;
+        }
+        .result-card {
+            padding: 1rem !important;
+            margin-bottom: 1rem !important;
+        }
+        .badge-pill {
+            margin-bottom: 0.3rem !important;
+        }
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -122,7 +141,7 @@ with st.sidebar:
     st.subheader("Image Source")
     input_source = st.radio(
         "Select input method:",
-        ("Pre-loaded Samples", "Upload Image"),
+        ("Pre-loaded Samples", "Upload Image", "Take Photo with Camera"),
         index=0,
         label_visibility="collapsed",
     )
@@ -157,7 +176,7 @@ with st.sidebar:
 
         st.caption("Tip: You can add custom sample images by dropping image files into the 'samples' folder.")
 
-    else:
+    elif input_source == "Upload Image":
         uploaded_file = st.file_uploader(
             "Choose a leaf image (PNG, JPG, JPEG, WEBP):",
             type=["png", "jpg", "jpeg", "webp"],
@@ -165,6 +184,12 @@ with st.sidebar:
         if uploaded_file is not None:
             image_to_process = Image.open(uploaded_file)
             image_title = f"Uploaded: {uploaded_file.name}"
+
+    else:
+        camera_img = st.camera_input("Point camera at mango leaf")
+        if camera_img is not None:
+            image_to_process = Image.open(camera_img)
+            image_title = "Camera Capture"
 
     st.markdown("---")
     st.subheader("Input Validation")
