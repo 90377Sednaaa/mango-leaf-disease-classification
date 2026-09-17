@@ -28,12 +28,13 @@ CLASS_NAMES = [
     "Sooty Mould",
 ]
 
+_robust_best_v2 = Path(__file__).resolve().parent / "Gournet_v2" / "gournet_v2_robust_best"
 _robust_v2 = Path(__file__).resolve().parent / "Gournet_v2" / "gournet_v2_robust"
 _best_v2 = Path(__file__).resolve().parent / "Gournet_v2" / "gournet_v2_best"
 
 MODEL_PATHS = {
     "v1": Path(__file__).resolve().parent / "Gournet_v1" / "gournet_model",
-    "v2": _robust_v2 if _robust_v2.exists() else _best_v2,
+    "v2": _robust_best_v2 if _robust_best_v2.exists() else (_robust_v2 if _robust_v2.exists() else _best_v2),
 }
 
 GRADCAM_LAYERS = {
@@ -54,13 +55,13 @@ MODEL_SPECS = {
         "last_conv_layer": "Convolution-4",
     },
     "v2": {
-        "name": "Enhanced GourNet V2 (Robust)",
-        "paper": "Thesis Improvement (Robust Training)",
-        "parameters": 98_280,
-        "key_features": "GroupNormalization, GlobalAveragePooling2D, Dual Dropout, Robust Augmentation",
+        "name": "Enhanced GourNet V2 (Attention Robust)",
+        "paper": "Thesis Improvement (Attention Gate + Capacity Scaling)",
+        "parameters": 194_793,
+        "key_features": "GroupNormalization, Spatial Attention Gate, GAP, Dual Dropout",
         "norm": "GroupNormalization (groups=8) after each block",
-        "pooling": "GlobalAveragePooling2D (0-param transition)",
-        "regularization": "SpatialDropout(0.2) + Head Dropout(0.4) + Robust Augmentation",
+        "pooling": "Spatial Attention Gate + GAP (eliminates background dilution)",
+        "regularization": "SpatialDropout(0.2) + Head Dropout(0.4)",
         "last_conv_layer": "Block4_ReLU",
     },
 }
