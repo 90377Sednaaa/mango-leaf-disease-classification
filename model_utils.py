@@ -35,7 +35,8 @@ MODEL_PATHS = {
 
 GRADCAM_LAYERS = {
     "v1": "Convolution-4",
-    "v2": "Block4_Conv",
+    # Explain the features after GroupNormalization + ReLU, before pooling.
+    "v2": "Block4_ReLU",
 }
 
 MODEL_SPECS = {
@@ -57,7 +58,7 @@ MODEL_SPECS = {
         "norm": "GroupNormalization (groups=8) after each block",
         "pooling": "GlobalAveragePooling2D (0-param transition)",
         "regularization": "SpatialDropout(0.2) + Head Dropout(0.4) + Zoom/Contrast",
-        "last_conv_layer": "Block4_Conv",
+        "last_conv_layer": "Block4_ReLU",
     },
 }
 
@@ -251,37 +252,57 @@ def generate_gradcam_heatmap(
     img_tensor: np.ndarray,
     pred_index: Optional[int] = None,
 ) -> np.ndarray:
+    """Explain one image using the pre-softmax score of a GourNet Dense head.
+
+    Does not mutate the model's activation, weights, or prediction probabilities.
+    Returns a normalized 2D map; all zeros means no positive Grad-CAM signal,
+    NOT that the model ignored the leaf. Grad-CAM is not a segmentation mask.
     """
-    Computes Grad-CAM heatmap for the given model, target conv layer, and input tensor.
-    Returns a 2D numpy array normalized between 0.0 and 1.0.
-    """
+    img_tensor = tf.convert_to_tensor(img_tensor, dtype=tf.float32)
+    if img_tensor.shape.rank != 4 or img_tensor.shape[0] != 1:
+        raise ValueError("Grad-CAM requires a single image batch (1, H, W, C).")
+    classifier = model.layers[-1]
+    if not isinstance(classifier, keras.layers.Dense):
+        raise ValueError("Grad-CAM expects a final Dense classifier, as used by GourNet.")
+    if keras.activations.serialize(classifier.activation) not in ("softmax", "linear"):
+        raise ValueError("Grad-CAM supports a softmax or linear Dense classifier only.")
+    if pred_index is not None and (
+        not isinstance(pred_index, (int, np.integer))
+        or not 0 <= pred_index < classifier.units
+    ):
+        raise ValueError("pred_index must be an integer within the classifier's class range.")
+
+    target = model.get_layer(layer_name).output
+    if len(target.shape) != 4:
+        raise ValueError("Grad-CAM target must have spatial dimensions (B, H, W, C).")
     grad_model = keras.models.Model(
-        model.input,
-        [model.get_layer(layer_name).output, model.output],
+        model.inputs, [target, classifier.input],
     )
 
     with tf.GradientTape() as tape:
-        conv_outputs, predictions = grad_model(img_tensor, training=False)
+        # Watching inputs also supports models whose layers are all frozen.
+        tape.watch(img_tensor)
+        conv_outputs, head_features = grad_model(img_tensor, training=False)
+        # Reconstruct the Dense pre-activation inside the tape. Never remove
+        # softmax in-place: the app shares its cached model across requests.
+        logits = tf.linalg.matmul(head_features, classifier.kernel)
+        if classifier.use_bias:
+            logits = tf.nn.bias_add(logits, classifier.bias)
         if pred_index is None:
-            pred_index = int(tf.argmax(predictions[0]))
-        class_channel = predictions[:, pred_index]
+            pred_index = int(tf.argmax(logits[0]))
+        class_channel = logits[:, pred_index]
 
     grads = tape.gradient(class_channel, conv_outputs)
-    # Global average pooling of gradients
-    pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
-
-    conv_outputs = conv_outputs[0]
-    # Multiply each channel by its gradient weight
-    heatmap = conv_outputs @ pooled_grads[..., tf.newaxis]
-    heatmap = tf.squeeze(heatmap)
-
-    # ReLU and normalization
+    if grads is None:
+        raise ValueError("Grad-CAM target is disconnected from the class score.")
+    if not bool(tf.reduce_all(tf.math.is_finite(grads))):
+        raise ValueError("Grad-CAM produced non-finite gradients.")
+    pooled_grads = tf.reduce_mean(grads, axis=(1, 2))
+    heatmap = tf.reduce_sum(conv_outputs[0] * pooled_grads[0], axis=-1)
     heatmap = tf.maximum(heatmap, 0)
-    max_val = tf.math.reduce_max(heatmap)
-    if max_val > 0:
-        heatmap = heatmap / max_val
-
-    return heatmap.numpy()
+    if not bool(tf.reduce_all(tf.math.is_finite(heatmap))):
+        raise ValueError("Grad-CAM produced a non-finite heatmap.")
+    return tf.math.divide_no_nan(heatmap, tf.reduce_max(heatmap)).numpy()
 
 
 def overlay_gradcam(
@@ -294,6 +315,10 @@ def overlay_gradcam(
     Overlays a 2D Grad-CAM heatmap onto the original PIL image.
     Uses bicubic interpolation for smooth visual gradients.
     """
+    # An empty explanation must not masquerade as a meaningful blue overlay.
+    if not np.any(heatmap > 0):
+        return original_pil.copy()
+
     # Resize heatmap to match original image dimensions
     heatmap_img = Image.fromarray(np.uint8(255 * heatmap))
     heatmap_resized = heatmap_img.resize(original_pil.size, resample=Image.Resampling.BICUBIC)

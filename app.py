@@ -380,6 +380,12 @@ with col_left:
     else:
         st.image(original_pil, caption="Input Leaf Image", use_container_width=True)
 
+    if enable_gradcam and not np.any(heatmap_v1 > 0):
+        st.warning(
+            "V1: No positive Grad-CAM signal for this class. Showing the original "
+            "image; this does not mean the leaf was ignored."
+        )
+
     # Top-3 Probabilities
     st.markdown("#### Top-3 Class Probabilities")
     for item in pred_v1["probabilities"][:3]:
@@ -429,6 +435,12 @@ with col_right:
         )
     else:
         st.image(original_pil, caption="Input Leaf Image", use_container_width=True)
+
+    if enable_gradcam and not np.any(heatmap_v2 > 0):
+        st.warning(
+            "V2: No positive Grad-CAM signal for this class. Showing the original "
+            "image; this does not mean the leaf was ignored."
+        )
 
     # Top-3 Probabilities
     st.markdown("#### Top-3 Class Probabilities")
