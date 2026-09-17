@@ -622,68 +622,122 @@ def render_batch_testing_view(v1_model, v2_model):
                 ground_truth_map[fname] = uniform_class
 
     else:
-        st.caption("Assign individual Ground Truth labels for each uploaded image using the table below:")
+        st.caption("Assign individual Ground Truth labels for each specimen in the batch:")
         if batch_files:
-            if "per_image_labels" not in st.session_state:
-                st.session_state["per_image_labels"] = {}
+            total_batch_count = len(batch_files)
+            current_signatures = [(idx, fname) for idx, (fname, _) in enumerate(batch_files)]
+
+            # Initialize or reset labels if batch files changed
+            if (
+                "mix_match_signatures" not in st.session_state
+                or st.session_state["mix_match_signatures"] != current_signatures
+            ):
+                st.session_state["mix_match_signatures"] = current_signatures
+                st.session_state["mix_match_labels"] = [model_utils.CLASS_NAMES[0]] * total_batch_count
+                st.session_state["editor_key_version"] = st.session_state.get("editor_key_version", 0) + 1
+
+            # Ensure length matches
+            if len(st.session_state.get("mix_match_labels", [])) != total_batch_count:
+                st.session_state["mix_match_labels"] = [model_utils.CLASS_NAMES[0]] * total_batch_count
+                st.session_state["editor_key_version"] = st.session_state.get("editor_key_version", 0) + 1
 
             # Quick batch preset helper
             col_preset1, col_preset2 = st.columns([2, 1])
             with col_preset1:
                 preset_class = st.selectbox(
-                    "Quick-set all rows to:",
+                    "Quick-set all specimens to:",
                     model_utils.CLASS_NAMES,
                     key="quick_preset_select",
                 )
             with col_preset2:
                 st.write("")
                 st.write("")
-                if st.button("Apply to All Rows"):
-                    for fname, _ in batch_files:
-                        st.session_state["per_image_labels"][fname] = preset_class
+                if st.button("Apply to All Specimens"):
+                    st.session_state["mix_match_labels"] = [preset_class] * total_batch_count
+                    st.session_state["editor_key_version"] = st.session_state.get("editor_key_version", 0) + 1
                     st.rerun()
 
-            editor_data = []
-            for fname, _ in batch_files:
-                current_label = st.session_state["per_image_labels"].get(fname, model_utils.CLASS_NAMES[0])
-                editor_data.append({
-                    "Filename": fname,
-                    "Ground Truth": current_label,
-                })
-            editor_df = pd.DataFrame(editor_data)
-
-            edited_df = st.data_editor(
-                editor_df,
-                column_config={
-                    "Filename": st.column_config.TextColumn("Filename", disabled=True),
-                    "Ground Truth": st.column_config.SelectboxColumn(
-                        "Ground Truth",
-                        options=model_utils.CLASS_NAMES,
-                        required=True,
-                        help="Select ground truth class for this leaf specimen",
-                    ),
-                },
-                hide_index=True,
-                use_container_width=True,
-                key="batch_data_editor",
+            # View selector: Visual Cards vs Table
+            view_style = st.radio(
+                "Labeling View:",
+                ("Visual Specimen Cards (Thumbnails + Selectors)", "Compact Spreadsheet Table"),
+                horizontal=True,
+                label_visibility="collapsed",
             )
 
-            for _, row in edited_df.iterrows():
-                ground_truth_map[row["Filename"]] = row["Ground Truth"]
-                st.session_state["per_image_labels"][row["Filename"]] = row["Ground Truth"]
-
-            with st.expander("Inspect Uploaded Specimen Thumbnails", expanded=False):
-                col_count = min(4, max(1, num_uploaded))
-                cols = st.columns(col_count)
+            if view_style == "Visual Specimen Cards (Thumbnails + Selectors)":
+                st.caption("Review each leaf specimen and confirm or adjust its confirmed Ground Truth:")
+                cols_per_row = 3
+                grid_cols = st.columns(cols_per_row)
                 for idx, (fname, f_obj) in enumerate(batch_files):
-                    with cols[idx % col_count]:
+                    with grid_cols[idx % cols_per_row]:
+                        st.markdown(
+                            f"""
+                            <div style="border: 1px solid rgba(128,128,128,0.22); border-radius: 8px; padding: 6px 10px; margin-bottom: 6px; background: var(--secondary-background-color, rgba(128,128,128,0.06));">
+                                <span style="font-weight: 700; font-size: 0.78rem; color: var(--secondary-text-color, #94a3b8);">#{idx+1}</span>
+                                <span style="font-weight: 600; font-size: 0.82rem; margin-left: 6px; word-break: break-all;">{fname}</span>
+                            </div>
+                            """,
+                            unsafe_allow_html=True,
+                        )
                         try:
                             if hasattr(f_obj, "seek"):
                                 f_obj.seek(0)
                             thumb_img = Image.open(f_obj)
-                            st.image(thumb_img, caption=fname, use_container_width=True)
+                            st.image(thumb_img, use_container_width=True)
                         except Exception:
                             st.caption(fname)
+
+                        curr_gt = st.session_state["mix_match_labels"][idx]
+                        idx_val = model_utils.CLASS_NAMES.index(curr_gt) if curr_gt in model_utils.CLASS_NAMES else 0
+                        card_key = f"card_gt_{idx}_{st.session_state.get('editor_key_version', 0)}"
+
+                        def _on_card_change(index=idx, k=card_key):
+                            st.session_state["mix_match_labels"][index] = st.session_state[k]
+
+                        st.selectbox(
+                            f"Ground Truth for #{idx+1} {fname}:",
+                            model_utils.CLASS_NAMES,
+                            index=idx_val,
+                            key=card_key,
+                            on_change=_on_card_change,
+                            label_visibility="collapsed",
+                        )
+
+            else:
+                st.caption("Edit Ground Truth directly in table format:")
+                editor_data = []
+                for idx, (fname, _) in enumerate(batch_files):
+                    editor_data.append({
+                        "Index": idx + 1,
+                        "Filename": fname,
+                        "Ground Truth": st.session_state["mix_match_labels"][idx],
+                    })
+                editor_df = pd.DataFrame(editor_data)
+
+                editor_key = f"batch_editor_v_{st.session_state.get('editor_key_version', 0)}"
+                edited_df = st.data_editor(
+                    editor_df,
+                    column_config={
+                        "Index": st.column_config.NumberColumn("No.", disabled=True, width="small"),
+                        "Filename": st.column_config.TextColumn("Filename", disabled=True),
+                        "Ground Truth": st.column_config.SelectboxColumn(
+                            "Ground Truth",
+                            options=model_utils.CLASS_NAMES,
+                            required=True,
+                            help="Select ground truth class for this leaf specimen",
+                        ),
+                    },
+                    hide_index=True,
+                    use_container_width=True,
+                    key=editor_key,
+                )
+
+                for row_idx, row in edited_df.iterrows():
+                    st.session_state["mix_match_labels"][row_idx] = row["Ground Truth"]
+
+            for idx, (fname, _) in enumerate(batch_files):
+                ground_truth_map[fname] = st.session_state["mix_match_labels"][idx]
         else:
             st.info("Upload at least 10 images above to configure per-image ground truth labels.")
 
@@ -710,13 +764,16 @@ def render_batch_testing_view(v1_model, v2_model):
     if run_batch and batch_files and len(batch_files) >= 10:
         items = []
         errors = []
-        for fname, f_obj in batch_files:
+        for idx, (fname, f_obj) in enumerate(batch_files):
             try:
                 # Seek to beginning of file in case it was read for thumbnails
                 if hasattr(f_obj, "seek"):
                     f_obj.seek(0)
                 img = Image.open(f_obj)
-                gt = ground_truth_map.get(fname, model_utils.CLASS_NAMES[0])
+                if label_mode == "Mode 1: Uniform Class Batch":
+                    gt = uniform_class
+                else:
+                    gt = st.session_state["mix_match_labels"][idx]
                 items.append({
                     "filename": fname,
                     "image": img,
