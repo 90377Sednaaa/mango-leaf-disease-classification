@@ -403,3 +403,105 @@ def validate_leaf_image(
     )
 
 
+def run_batch_evaluation(
+    v1_model,
+    v2_model,
+    items: list,
+    progress_callback=None,
+) -> Dict[str, Any]:
+    """
+    Executes batch inference across multiple leaf images for both GourNet V1 and V2,
+    evaluates predictions against Ground Truth labels, and computes summary statistics
+    strictly formatted as percentages.
+
+    Returns:
+        {
+            "summary": {
+                "total_images": int,
+                "v1": {
+                    "match_rate": float,
+                    "avg_confidence": float,
+                    "misclassification_rate": float,
+                    "matches_count": int,
+                },
+                "v2": {
+                    "match_rate": float,
+                    "avg_confidence": float,
+                    "misclassification_rate": float,
+                    "matches_count": int,
+                },
+            },
+            "details": list of dicts,
+        }
+    """
+    total = len(items)
+    if total == 0:
+        return {"summary": {}, "details": []}
+
+    rows = []
+    for idx, item in enumerate(items):
+        filename = item["filename"]
+        img = item["image"]
+        ground_truth = item["ground_truth"]
+
+        batch_tensor, _ = preprocess_image(img)
+        p1 = predict(v1_model, batch_tensor)
+        p2 = predict(v2_model, batch_tensor)
+
+        v1_pred = p1["top_class"]
+        v1_conf = float(p1["top_confidence"])
+        v1_match = (v1_pred == ground_truth)
+
+        v2_pred = p2["top_class"]
+        v2_conf = float(p2["top_confidence"])
+        v2_match = (v2_pred == ground_truth)
+
+        rows.append({
+            "Filename": filename,
+            "Ground Truth": ground_truth,
+            "V1 Prediction": v1_pred,
+            "V1 Confidence (%)": round(v1_conf * 100.0, 1),
+            "V1 Match": "Match" if v1_match else "Misclassified",
+            "V1 Match Bool": v1_match,
+            "V1 Raw Conf": v1_conf,
+            "V2 Prediction": v2_pred,
+            "V2 Confidence (%)": round(v2_conf * 100.0, 1),
+            "V2 Match": "Match" if v2_match else "Misclassified",
+            "V2 Match Bool": v2_match,
+            "V2 Raw Conf": v2_conf,
+        })
+
+        if progress_callback:
+            progress_callback(idx + 1, total)
+
+    v1_matches = sum(1 for r in rows if r["V1 Match Bool"])
+    v1_match_rate = round((v1_matches / total) * 100.0, 1)
+    v1_avg_conf = round((sum(r["V1 Raw Conf"] for r in rows) / total) * 100.0, 1)
+    v1_misc_rate = round(100.0 - v1_match_rate, 1)
+
+    v2_matches = sum(1 for r in rows if r["V2 Match Bool"])
+    v2_match_rate = round((v2_matches / total) * 100.0, 1)
+    v2_avg_conf = round((sum(r["V2 Raw Conf"] for r in rows) / total) * 100.0, 1)
+    v2_misc_rate = round(100.0 - v2_match_rate, 1)
+
+    return {
+        "summary": {
+            "total_images": total,
+            "v1": {
+                "match_rate": v1_match_rate,
+                "avg_confidence": v1_avg_conf,
+                "misclassification_rate": v1_misc_rate,
+                "matches_count": v1_matches,
+            },
+            "v2": {
+                "match_rate": v2_match_rate,
+                "avg_confidence": v2_avg_conf,
+                "misclassification_rate": v2_misc_rate,
+                "matches_count": v2_matches,
+            },
+        },
+        "details": rows,
+    }
+
+
+
