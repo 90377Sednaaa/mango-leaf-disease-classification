@@ -1,5 +1,6 @@
 streamlit>=1.35.0
-tensorflow>=2.16.0
+tensorflow-cpu>=2.16.0; sys_platform != 'win32'
+tensorflow>=2.16.0; sys_platform == 'win32'
 keras>=3.0.0
 numpy>=1.26.0
 pillow>=10.0.0
